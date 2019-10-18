@@ -87,7 +87,7 @@ function Table() {
 function readFile(fileName) {
 	let fs = require('fs');
 	let data = fs.readFileSync(fileName, 'utf8');
-	data = data.split('\r\n');
+	data = data.split('\n');
 	for (let index = 0; index < data.length; index++) {
 		if(data[index] != '') {
 			let infoStr = data[index].split(',');
