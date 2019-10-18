@@ -5,7 +5,7 @@ var fs = require('fs')
 var auto_schedule = require('../methods/AutoSchedule')
 var node_excel = require('excel-export')
 
-var basic_url = 'http://localhost:12345/index.php/DutySignUp';
+var basic_url = 'http://moa.sysu.alau.top/index.php/DutySignUp';
 
 var excel_data = null;
 
@@ -80,7 +80,7 @@ router.get('/', function(req, res, next) {
   console.log(time_period);
   if (time_period == false) {
     res.render('error', {
-      msg: '请从MOA登录'
+      msg: '请从MOA登录后访问'
     });
   }
   else {
