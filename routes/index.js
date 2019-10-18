@@ -85,7 +85,7 @@ router.get('/', function(req, res, next) {
     });
   }
   else {
-    arrange_result = auto_schedule('../signup.txt');
+    arrange_result = auto_schedule('./signup.txt');
     result = translate_auto_schedule_result(arrange_result, time_period);
     excel_data = result;
     console.log(result['weekend'])
