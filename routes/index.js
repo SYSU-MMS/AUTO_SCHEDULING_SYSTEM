@@ -3,8 +3,11 @@ var router = express.Router();
 var fetch = require('node-fetch')
 var fs = require('fs')
 var auto_schedule = require('../methods/AutoSchedule')
+var node_excel = require('excel-export')
 
 var basic_url = 'http://localhost:12345/index.php/DutySignUp';
+
+var excel_data = null;
 
 function download(u, p) {
 	return fetch(u, {
@@ -83,6 +86,7 @@ router.get('/', function(req, res, next) {
   else {
     arrange_result = auto_schedule('./signup.txt');
     result = translate_auto_schedule_result(arrange_result, time_period);
+    excel_data = result;
     console.log(result['weekend'])
     res.render('index', {
       weekday: result['weekday'],
@@ -90,5 +94,171 @@ router.get('/', function(req, res, next) {
     });
   }
 });
+
+// router.get('/excel', function(req, res, next){
+//     var conf ={};
+//     conf.name = "workday";
+//     conf.cols = [{
+//     caption:'中文测试',
+//         type:'string',
+//   },{
+//     caption:'date',
+//     type:'date',
+//   },{
+//     caption:'bool',
+//     type:'bool'
+//   },{
+//     caption:'number',
+//      type:'number'        
+//     }];
+//     conf.rows = [
+//     ['中文字符测试', new Date(Date.UTC(2013, 4, 1)), true, 3.14],
+//     ["e", new Date(2012, 4, 1), false, 2.7182],
+//         ["M&M<>'", new Date(Date.UTC(2013, 6, 9)), false, 1.61803],
+//         ["null date", null, true, 1.414]  
+//     ];
+//     var result = node_excel.execute(conf);
+//     res.setHeader('Content-Type', 'application/vnd.openxmlformats');
+//     res.setHeader("Content-Disposition", "attachment; filename=" + "Report.xlsx");
+//     res.end(result, 'binary');
+// });
+
+router.get('/excel', function(req, res, next) {
+  var confs = []
+  // 工作日的sheet
+  var workday_conf = {}
+  workday_conf.name = "workday"
+  workday_conf.cols = [{
+    caption: '时段',
+    type: 'string',
+    width: 12
+  }, {
+    caption: '周一',
+    type: 'string',
+    width: 10
+  }, {
+    caption: '周二',
+    type: 'string',
+    width: 10
+  }, {
+    caption: '周三',
+    type: 'string',
+    width: 10
+  }, {
+    caption: '周四',
+    type: 'string',
+    width: 10
+  }, {
+    caption: '周五',
+    type: 'string',
+    width: 10
+  }]
+  workday_conf.rows = []
+  for (var i = 0; i < excel_data['weekday'].length; i++) {
+    if (i == 0 || i == excel_data['weekday'].length - 1) {
+      // 早班和晚班有3个人值班，要3行
+      var row_1 = []
+      var row_2 = []
+      var row_3 = []
+      row_1.push(excel_data['weekday'][i][0])
+      row_2.push('  ')
+      row_3.push('  ')
+      for (var j = 1; j < excel_data['weekday'][i].length; j++) {
+        var arr = excel_data['weekday'][i][j].split('\n')
+        if (0 < arr.length) row_1.push(arr[0])
+        else row_1.push('  ')
+        if (1 < arr.length) row_2.push(arr[1])
+        else row_2.push('  ')
+        if (2 < arr.length) row_3.push(arr[2])
+        else row_3.push('  ')
+      }
+      workday_conf.rows.push(row_1)
+      workday_conf.rows.push(row_2)
+      workday_conf.rows.push(row_3)
+    }
+    else {
+      // 其余时候2个人值班，要2行
+      var row_1 = []
+      var row_2 = []
+      row_1.push(excel_data['weekday'][i][0])
+      row_2.push('  ')
+      for (var j = 1; j < excel_data['weekday'][i].length; j++) {
+        var arr = excel_data['weekday'][i][j].split('\n')
+        if (0 < arr.length) row_1.push(arr[0])
+        else row_1.push('  ')
+        if (1 < arr.length) row_2.push(arr[1])
+        else row_2.push('  ')
+      }
+      workday_conf.rows.push(row_1)
+      workday_conf.rows.push(row_2)
+    }
+  }
+  console.log(workday_conf)
+
+  // 周末的sheet
+  var weekend_conf = {}
+  weekend_conf.name = "weekend"
+  weekend_conf.cols = [{
+    caption: '时段',
+    type: 'string',
+    width: 12
+  }, {
+    caption: '周六',
+    type: 'string',
+    width: 10
+  }, {
+    caption: '周日',
+    type: 'string',
+    width: 10
+  }]
+  weekend_conf.rows = []
+  for (var i = 0; i < excel_data['weekend'].length; i++) {
+    if (i == excel_data['weekend'].length - 1) {
+      // 晚班有3个人值班，要3行
+      var row_1 = []
+      var row_2 = []
+      var row_3 = []
+      row_1.push(excel_data['weekend'][i][0])
+      row_2.push('  ')
+      row_3.push('  ')
+      for (var j = 1; j < excel_data['weekend'][i].length; j++) {
+        var arr = excel_data['weekend'][i][j].split('\n')
+        if (0 < arr.length) row_1.push(arr[0])
+        else row_1.push('  ')
+        if (1 < arr.length) row_2.push(arr[1])
+        else row_2.push('  ')
+        if (2 < arr.length) row_3.push(arr[2])
+        else row_3.push('  ')
+      }
+      weekend_conf.rows.push(row_1)
+      weekend_conf.rows.push(row_2)
+      weekend_conf.rows.push(row_3)
+    }
+    else {
+      // 其余时候2个人值班，要2行
+      var row_1 = []
+      var row_2 = []
+      row_1.push(excel_data['weekend'][i][0])
+      row_2.push('  ')
+      for (var j = 1; j < excel_data['weekend'][i].length; j++) {
+        var arr = excel_data['weekend'][i][j].split('\n')
+        if (0 < arr.length) row_1.push(arr[0])
+        else row_1.push('  ')
+        if (1 < arr.length) row_2.push(arr[1])
+        else row_2.push('  ')
+      }
+      weekend_conf.rows.push(row_1)
+      weekend_conf.rows.push(row_2)
+    }
+  }
+  console.log(weekend_conf)
+  confs.push(workday_conf)
+  confs.push(weekend_conf)
+  var result = node_excel.execute(confs)
+  res.setHeader('Content-Type', 'application/vnd.openxmlformats;charset=utf-8');
+  var filename = encodeURI('MOA排班结果')
+  res.setHeader("Content-Disposition", "attachment; filename=" + filename + ".xlsx");
+  res.end(result, 'binary');
+})
 
 module.exports = router;

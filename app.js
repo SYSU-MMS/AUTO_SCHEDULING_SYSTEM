@@ -4,6 +4,7 @@ var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 var ejs = require('ejs');
+var nodeExcel = require('excel-export')
 
 var indexRouter = require('./routes/index');
 
