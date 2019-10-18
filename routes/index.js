@@ -74,7 +74,7 @@ router.get('/', function(req, res, next) {
   var signup_url = basic_url + "/exportToTxt";
   var time_url = basic_url + "/exportTimePeriodToTxt"
   console.log(time_url)
-  // download(signup_url, 'signup.txt');
+  download(signup_url, 'signup.txt');
   download(time_url, "timeperiod.txt");
   var time_period = get_time_peroid("timeperiod.txt");
   console.log(time_period)
