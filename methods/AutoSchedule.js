@@ -6,7 +6,7 @@ const TimePeriod = [
     'FRI1', 'FRI2', 'FRI3', 'FRI4', 'FRI5', 'FRI6',
 	'SAT1', 'SAT2', 'SAT3', 'SAT4', 'SAT5', 'SAT6',
 	'SUN1', 'SUN2', 'SUN3', 'SUN4', 'SUN5', 'SUN6'
-];
+]; 
 
 const AGroupCannotTime = [0, 5, 12, 17, 24, 29];
 const BGroupCannotTime = [6, 11, 18, 23];
@@ -23,7 +23,7 @@ const remainedTimeList = {
 	"C": 10.0
 };
 
-var personList = [];
+var personList;
 
 function Person(name, groupType, remainedTime, validTimePeriod) {
 	this.name = name;
@@ -301,6 +301,7 @@ function peopleToJson() {
 }
 
 function main(fileName) {
+	personList = [];
 	readFile(fileName);
 	NPersionPartition();
 	let table = Table();
@@ -316,7 +317,7 @@ function main(fileName) {
 		'peopleList' : peopleToJson(),
 		'invalidTimeList' : invalidTimeList.join(',')
 	};
-	console.log(result);
+	// console.log(result);
 
 	return result;
 }
