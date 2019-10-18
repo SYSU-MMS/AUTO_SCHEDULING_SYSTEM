@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>MOA-自动排班</title>
+  <link href="images/moa.ico" rel="shortcut icon">
+
+  <link href="bootstrap/css/bootstrap.min.css" rel="stylesheet">
+  <link href="bootstrap/font-awesome/css/font-awesome.min.css" rel="stylesheet">
+
+  <link href="bootstrap/css/plugins/iCheck/custom.css" rel="stylesheet">
+
+  <link href="bootstrap/css/plugins/jasny/jasny-bootstrap.min.css" rel="stylesheet">
+
+  <!-- Data Tables -->
+  <link href="bootstrap/css/plugins/dataTables/dataTables.bootstrap.css" rel="stylesheet">
+
+  <link href="bootstrap/css/animate.css" rel="stylesheet">
+  <link href="bootstrap/css/style.css" rel="stylesheet">
+
+</head>
+<body>
+  <div class="container gray-bg dashbard-1" style="margin-top: 20px; padding-left: 20px;">
+    <div class="row">
+      <div class="col-lg-12">
+        <div class="col-sm-8">
+          <h1>欢迎来到MOA自动排班系统</h1>
+        </div>
+        <div class="col-sm-4">
+          <ul class="nav navbar-top-links navbar-right">
+            <li>
+              <a href="http://localhost:12345/index.php/DutySignUp">
+                <i class="fa fa-sign-out"></i> 返回MOA
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <div class="wrapper wrapper-content animated fadeInRight">
+      <div class="row">
+        <div class="col-lg-12">
+          <div class="col-sm-8">
+            <table class="table table-bordered table-hover">
+              <thead>
+                <tr>
+                  <th scope="col" abbr="per">时段</th>
+                  <th scope="col" abbr="mon">周一</th>
+                  <th scope="col" abbr="tue">周二</th>
+                  <th scope="col" abbr="wed">周三</th>
+                  <th scope="col" abbr="thu">周四</th>
+                  <th scope="col" abbr="fri">周五</th>
+                </tr>
+              </thead>
+              <tbody>
+                <% weekday.forEach(function(each_row){ %>
+                    <tr>
+                      <% each_row.forEach(function(item){ %>
+                        <td><%= item %></td>
+                      <% }) %>
+                    </tr>
+                    <% }) %>
+              </tbody>
+            </table>
+          </div>
+          <div class="col-sm-4">
+            <table class="table table-bordered table-hover">
+              <thead>
+              <tr>
+                <th scope="col" abbr="per">时段</th>
+                <th scope="col" abbr="sat">周六</th>
+                <th scope="col" abbr="sun">周日</th>
+              </tr>
+              </thead>
+              <tbody>
+                <% weekend.forEach(function(each_row){ %>
+                    <tr>
+                      <% each_row.forEach(function(item){ %>
+                        <td><%= item %></td>
+                      <% }) %>
+                    </tr>
+                    <% }) %>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+    </div>
+    
+  </div>
+
+  
+
+  <!-- Mainly scripts -->
+  <script src="bootstrap/js/jquery-2.1.1.min.js"></script>
+  <script src="bootstrap/js/bootstrap.min.js"></script>
+
+  <script src="bootstrap/js/plugins/metisMenu/jquery.metisMenu.js"></script>
+  <script src="bootstrap/js/plugins/slimscroll/jquery.slimscroll.min.js"></script>
+
+  <!-- Custom and plugin javascript -->
+  <script src="bootstrap/js/hplus.js?v=2.2.0"></script>
+  <script src="bootstrap/js/plugins/pace/pace.min.js"></script>
+
+  <!-- Dynamic date -->
+  <script src="bootstrap/js/dynamicDate.js"></script>
+
+  <!-- Jquery Validate -->
+  <script type="text/javascript" src="bootstrap/js/plugins/validate/messages_zh.min.js"></script>
+
+  <!-- iCheck -->
+  <script src="bootstrap/js/plugins/iCheck/icheck.min.js"></script>
+
+  <!-- Input Mask-->
+  <script src="bootstrap/js/plugins/jasny/jasny-bootstrap.min.js"></script>
+
+  <!-- Data Tables -->
+  <script src="bootstrap/js/plugins/dataTables/jquery.dataTables.js"></script>
+  <script src="bootstrap/js/plugins/dataTables/dataTables.bootstrap.js"></script>
+</body>
+</html>
