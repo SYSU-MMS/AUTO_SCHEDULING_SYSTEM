@@ -256,9 +256,9 @@ function scheduling(list, proc) {
 				break;
 		}
 	}
-	// A组
-	groupScheduling(AList, proc, 'A');
+
 	groupScheduling(BList, proc, 'B');
+	groupScheduling(AList, proc, 'A');
 	groupScheduling(CList, proc, 'C');
 	list.splice(0, list.length);
 	list.push(...AList);
@@ -317,7 +317,7 @@ function main(fileName) {
 		'peopleList' : peopleToJson(),
 		'invalidTimeList' : invalidTimeList.join(',')
 	};
-	// console.log(result);
+	console.log(result);
 
 	return result;
 }
