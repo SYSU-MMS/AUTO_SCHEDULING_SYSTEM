@@ -5,18 +5,19 @@ var fs = require('fs')
 var auto_schedule = require('../methods/AutoSchedule')
 var node_excel = require('excel-export')
 
+var debug_controller = require('../methods/DebugController')
+
 var basic_url = 'http://moa.sysu.alau.top/index.php/DutySignUp';
+// var basic_url = "http://localhost:12345/index.php/DutySignUp";
 
 var excel_data = null;
 
-function download(u, p) {
+var download =  function(u, p) {
 	return fetch(u, {
 		method: 'GET',
 		headers: { 'Content-Type': 'application/octet-stream' }
 	}).then(res => res.buffer()).then(_ => {
-		fs.writeFile(p, _, 'binary', function(err) {
-			console.log(err || p);
-		});
+		fs.writeFileSync(p, _, 'binary');
 	});
 }
 
@@ -65,7 +66,7 @@ function translate_auto_schedule_result(arrange_result, time_period) {
       result[key].push(row);
     }
   }
-  console.log(result);
+  if (debug_controller.show_console) console.log(result);
   return result;
 }
 
@@ -73,29 +74,40 @@ function translate_auto_schedule_result(arrange_result, time_period) {
 router.get('/', function(req, res, next) {
   var signup_url = basic_url + "/exportToTxt";
   var time_url = basic_url + "/exportTimePeriodToTxt"
-  console.log(time_url)
-  download(signup_url, 'signup.txt');
-  download(time_url, "timeperiod.txt");
-  var time_period = get_time_peroid("timeperiod.txt");
-  console.log(time_period)
-  console.log(time_period);
-  if (time_period['weekend'].length == 0) {
-    res.render('error', {
-      msg: '请从MOA登录后访问'
-    });
-  }
-  else {
-    arrange_result = auto_schedule('./signup.txt');
+  var time_period = null;
+  var result = null;
+  download(signup_url, 'signup.txt').then(_ => {
+    var data = fs.readFileSync('./signup.txt', 'utf-8')
+    if (debug_controller.show_console) console.log(data)
+  }).then(_ => {
+    return download(time_url, "timeperiod.txt")
+  }).then(_ => {
+    time_period = get_time_peroid('timeperiod.txt')
+    if (debug_controller.show_console) console.log(time_period)
+  }).then(_ => {
+    if (time_period == null || time_period['weekend'].length == 0) {
+      throw new Error('发生错误，请从MOA登录后访问')
+    }
+    var arrange_result = auto_schedule('./signup.txt');
     result = translate_auto_schedule_result(arrange_result, time_period);
     excel_data = result;
-    console.log(result['weekend'])
+    if (debug_controller.show_console) console.log(result)
+  }).then(_ => {
+    if (result == null) {
+      throw new Error('发生错误，请从MOA登录后访问')
+    }
     res.render('index', {
       weekday: result['weekday'],
       weekend: result['weekend']
     });
-  }
+  }).catch(err => {
+    res.render('error', {
+      msg: err
+    })
+  })
 });
 
+/* Download the result in the Excel form */
 router.get('/excel', function(req, res, next) {
   if (excel_data == null) {
     res.render('error', {

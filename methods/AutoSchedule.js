@@ -1,12 +1,20 @@
+/*
+ * core function
+ * auto scheduling
+ */
+ 
 const TimePeriod = [
 	'MON1', 'MON2', 'MON3', 'MON4', 'MON5', 'MON6',
-    'TUE1', 'TUE2', 'TUE3', 'TUE4', 'TUE5', 'TUE6',
-    'WED1', 'WED2', 'WED3', 'WED4', 'WED5', 'WED6',
-    'THU1', 'THU2', 'THU3', 'THU4', 'THU5', 'THU6',
-    'FRI1', 'FRI2', 'FRI3', 'FRI4', 'FRI5', 'FRI6',
+  'TUE1', 'TUE2', 'TUE3', 'TUE4', 'TUE5', 'TUE6',
+  'WED1', 'WED2', 'WED3', 'WED4', 'WED5', 'WED6',
+  'THU1', 'THU2', 'THU3', 'THU4', 'THU5', 'THU6',
+  'FRI1', 'FRI2', 'FRI3', 'FRI4', 'FRI5', 'FRI6',
 	'SAT1', 'SAT2', 'SAT3', 'SAT4', 'SAT5', 'SAT6',
 	'SUN1', 'SUN2', 'SUN3', 'SUN4', 'SUN5', 'SUN6'
 ]; 
+
+let fs = require('fs');
+let debug_controller = require('./DebugController')
 
 const AGroupCannotTime = [0, 5, 12, 17, 24, 29];
 const BGroupCannotTime = [6, 11, 18, 23];
@@ -85,8 +93,9 @@ function Table() {
 }
 
 function readFile(fileName) {
-	let fs = require('fs');
-	let data = fs.readFileSync(fileName, 'utf8');
+	let data = fs.readFileSync(fileName, 'utf8')
+	if (debug_controller.show_console) console.log('read data')
+	if (debug_controller.show_console) console.log(data)
 	data = data.split('\n');
 	for (let index = 0; index < data.length; index++) {
 		if(data[index] != '') {
@@ -306,7 +315,7 @@ function main(fileName) {
 	NPersionPartition();
 	let table = Table();
 	if (table == null) {
-		console.log('generating table failed!');
+		if (debug_controller.show_console) console.log('generating table failed!');
 		return;
 	}
 	scheduling(personList, table);
@@ -317,7 +326,7 @@ function main(fileName) {
 		'peopleList' : peopleToJson(),
 		'invalidTimeList' : invalidTimeList.join(',')
 	};
-	console.log(result);
+	if (debug_controller.show_console) console.log(result);
 
 	return result;
 }
