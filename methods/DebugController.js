@@ -3,7 +3,8 @@
  *  else set it to false
  */
 var debug = {
-  show_console: false
+  show_console: false,
+  test_mode: false
 }
 
 module.exports = debug

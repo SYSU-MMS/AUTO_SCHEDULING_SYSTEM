@@ -7,8 +7,11 @@ var node_excel = require('excel-export')
 
 var debug_controller = require('../methods/DebugController')
 
-var basic_url = 'http://moa.sysu.alau.top/index.php/DutySignUp';
-// var basic_url = "http://localhost:12345/index.php/DutySignUp";
+var basic_url = null;
+if (debug_controller.test_mode == false)
+  basic_url = 'http://moa.sysu.alau.top/index.php/DutySignUp';
+else
+  basic_url = "http://localhost:12345/index.php/DutySignUp";
 
 var excel_data = null;
 
@@ -66,6 +69,15 @@ function translate_auto_schedule_result(arrange_result, time_period) {
       result[key].push(row);
     }
   }
+  // 添加每个人的工时，用在excel表中
+  var work_time = []
+  for (var i = 0; i < arrange_result['peopleList'].length; i++) {
+    var arr = []
+    arr.push(arrange_result['peopleList'][i].name);
+    arr.push(arrange_result['peopleList'][i].totalWorkTime.toString());
+    work_time.push(arr)
+  }
+  result['worktime'] = work_time;
   if (debug_controller.show_console) console.log(result);
   return result;
 }
@@ -240,8 +252,27 @@ router.get('/excel', function(req, res, next) {
         weekend_conf.rows.push(row_2)
       }
     }
+    if (debug_controller.show_console) console.log(weekend_conf)
+    // 工时的sheet
+    var worktime_conf = {}
+    worktime_conf.name = "worktime";
+    worktime_conf.cols = [{
+      caption: '名字',
+      type: 'string',
+      width: 12
+    }, {
+      caption: '总工作时长',
+      type: 'string',
+      width: 12
+    }]
+    worktime_conf.rows = []
+    for (var i = 0; i < excel_data['worktime'].length; i++) {
+      worktime_conf.rows.push(excel_data['worktime'][i])
+    }
+    if (debug_controller.show_console) console.log(worktime_conf)
     confs.push(workday_conf)
     confs.push(weekend_conf)
+    confs.push(worktime_conf)
     var result = node_excel.execute(confs)
     res.setHeader('Content-Type', 'application/vnd.openxmlformats;charset=utf-8');
     var filename = encodeURI('MOA排班结果')
