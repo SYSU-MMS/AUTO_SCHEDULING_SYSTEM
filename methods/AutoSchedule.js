@@ -149,7 +149,7 @@ function NPersionPartition() {
 	});
 	Nlist.forEach(p => {
 		if (p.Aweight <= p.Bweight) {
-			if (curA < 21) {
+			if (curA < 18) {
 				curA++;
 				p.groupType = 'A';
 				p.remainedTime = remainedTimeList['A'];
@@ -158,7 +158,7 @@ function NPersionPartition() {
 				p.remainedTime = remainedTimeList['B'];
 			}
 		} else {
-			if(curB < 21) {
+			if(curB < 18) {
 				curB++;
 				p.groupType = 'B';
 				p.remainedTime = remainedTimeList['B'];
